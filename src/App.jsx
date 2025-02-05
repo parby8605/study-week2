@@ -45,7 +45,7 @@ function App() {
     const converted_user = convert(result.body[i])
     converted_users.push(converted_user)
   }
-  console.log(JSON.stringify(converted_users)) //문자로 변환 필요
+  console.log(JSON.stringify(converted_users)) //문자로 변환 필요dd
 
   return (
     <>
