@@ -1,62 +1,61 @@
-import { useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import './App.css'
 import { useAppDispatch, useAppSelector } from './app/hook'
-import { change, modify } from './features/theme/slice'
-import { store } from './app/store'
+import { change, THEME } from './features/theme/slice'
 import { ReduxProvider } from './providers/ReduxProvider'
 
-function ThemeText() {
-  const themeColor = useAppSelector((state) => state.theme.color)
-  console.log('theme color : ', themeColor)
-  console.log('Theme text rendered!')
-  return (
-    <>
-      {}
-      <div style={{ color: themeColor }}>여기 색이 바뀌어야함</div>
-    </>
-  )
-}
-
-function ThemeDescription() {
-  const themeDesc = useAppSelector((state) => state.theme.desc)
-  console.log("Theme'Description' Rerendered !")
-  return <div>{themeDesc}</div>
-}
-
-const dispatchWithLog = (store) => (next) => (action) => {
-  //커링패턴, 질문 or 공부 필요
-  console.log('- 이전 State : ', store.getState())
-  console.log('- Action : ', action)
-  next(action)
-  console.log('- 이후 State : ', store.getState())
-}
-
-function ChangeButton() {
-  const dispatch = useAppDispatch()
-  console.log('Display Rerendered !')
-  return <button onClick={() => dispatchWithLog(store)(dispatch)(change())}>변경 버튼</button>
-}
-
-function ModifyButton({ color, desc }) {
+function ThemeSelect() {
+  const theme = useAppSelector((state) => state['theme'].theme)
   const dispatch = useAppDispatch()
   return (
-    <button onClick={() => dispatchWithLog(store)(dispatch)(modify({ color, desc }))}>
-      <span style={{ color }}>테마 변경</span>
-    </button>
+    <select value={theme} onChange={(e) => dispatch(change(e.target.value))}>
+      {Object.values(THEME).map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
   )
 }
 
 function App() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || THEME.DEFAULT
+    dispatch(change(savedTheme))
+
+    const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    const applyTheme = (theme) => {
+      if (theme === THEME.DARK) {
+        document.body.classList.add('dark')
+      } else if (theme === THEME.LIGHT) {
+        document.body.classList.remove('dark')
+      } else if (theme === THEME.DEFAULT) {
+        themeMedia.matches
+          ? document.body.classList.add('dark')
+          : document.body.classList.remove('dark')
+      }
+    }
+
+    applyTheme(savedTheme)
+
+    const handleThemeChange = (e) => {
+      if (savedTheme === THEME.DEFAULT) {
+        e.matches ? document.body.classList.add('dark') : document.body.classList.remove('dark')
+      }
+    }
+
+    themeMedia.addEventListener('change', handleThemeChange)
+    return () => {
+      themeMedia.removeEventListener('change', handleThemeChange)
+    }
+  }, [dispatch])
+
   return (
     <ReduxProvider>
-      <div>
-        <h2>Theme Change</h2>
-        <ThemeText />
-        <ThemeDescription />
-        <ChangeButton />
-        <ModifyButton color='red' desc='red theme'></ModifyButton>
-        <ModifyButton color='green' desc='green theme'></ModifyButton>
-      </div>
+      <h1>Theme</h1>
+      <ThemeSelect />
     </ReduxProvider>
   )
 }

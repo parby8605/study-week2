@@ -1,27 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+export const THEME = {
+  DEFAULT: 'system',
+  DARK: 'dark',
+  LIGHT: 'light',
+}
+
 const themeSlice = createSlice({
   name: 'theme',
-
-  initialState: { color: 'black', desc: 'black theme' },
-
+  initialState: { theme: localStorage.getItem('theme') ?? THEME.DEFAULT },
   reducers: {
-    change: (prev) => {
-      if (prev.color === 'black') {
-        prev.color = 'white'
-        prev.desc = 'white theme'
-      } else {
-        prev.color = 'black'
-        prev.desc = 'black theme'
-      }
-    },
-    modify: (prev, { payload }) => {
-      prev.color = payload.color
-      prev.desc = payload.desc
+    change: (previousState, { payload, type }) => {
+      previousState.theme = payload
     },
   },
 })
 
-export const { change, modify } = themeSlice.actions
+export const { change } = themeSlice.actions
 
 export default themeSlice.reducer
