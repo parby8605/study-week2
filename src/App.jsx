@@ -19,38 +19,38 @@ function ThemeSelect() {
 }
 
 function App() {
-  const dispatch = useAppDispatch()
+  // const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || THEME.DEFAULT
-    dispatch(change(savedTheme))
+  // useEffect(() => {
+  //   const savedTheme = localStorage.getItem('theme') || THEME.DEFAULT
+  //   dispatch(change(savedTheme))
 
-    const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
-    const applyTheme = (theme) => {
-      if (theme === THEME.DARK) {
-        document.body.classList.add('dark')
-      } else if (theme === THEME.LIGHT) {
-        document.body.classList.remove('dark')
-      } else if (theme === THEME.DEFAULT) {
-        themeMedia.matches
-          ? document.body.classList.add('dark')
-          : document.body.classList.remove('dark')
-      }
-    }
+  //   const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
+  //   const applyTheme = (theme) => {
+  //     if (theme === THEME.DARK) {
+  //       document.body.classList.add('dark')
+  //     } else if (theme === THEME.LIGHT) {
+  //       document.body.classList.remove('dark')
+  //     } else if (theme === THEME.DEFAULT) {
+  //       themeMedia.matches
+  //         ? document.body.classList.add('dark')
+  //         : document.body.classList.remove('dark')
+  //     }
+  //   }
 
-    applyTheme(savedTheme)
+  //   applyTheme(savedTheme)
 
-    const handleThemeChange = (e) => {
-      if (savedTheme === THEME.DEFAULT) {
-        e.matches ? document.body.classList.add('dark') : document.body.classList.remove('dark')
-      }
-    }
+  //   const handleThemeChange = (e) => {
+  //     if (savedTheme === THEME.DEFAULT) {
+  //       e.matches ? document.body.classList.add('dark') : document.body.classList.remove('dark')
+  //     }
+  //   }
 
-    themeMedia.addEventListener('change', handleThemeChange)
-    return () => {
-      themeMedia.removeEventListener('change', handleThemeChange)
-    }
-  }, [dispatch])
+  //   themeMedia.addEventListener('change', handleThemeChange)
+  //   return () => {
+  //     themeMedia.removeEventListener('change', handleThemeChange)
+  //   }
+  // }, [dispatch])
 
   return (
     <ReduxProvider>
